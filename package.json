@@ -1,7 +1,7 @@
 {
-  "name": "crypto-pay-vault",
+  "name": "medichain-hospital-app",
   "version": "1.0.0",
-  "description": "Blockchain QR Payment & Ledger Gateway",
+  "description": "Hospital Blockchain EHR & Cryptographic Vault",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
