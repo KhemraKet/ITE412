@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediChain Portal - Secure Hospital System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono-font { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 px-6 py-4 shadow-sm">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 font-bold text-xl shadow-sm">
+                    🏥
+                </div>
+                <div>
+                    <h1 class="font-bold text-base text-slate-900 tracking-tight">MediChain Portal</h1>
+                    <p class="text-[10px] text-slate-500 uppercase font-semibold">Blockchain EHR & Cryptographic Vault</p>
+                </div>
+            </div>
+
+            <!-- Page Navigation Tabs -->
+            <nav class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+                <button onclick="switchTab('page1')" id="btn-page1" class="px-4 py-2 rounded-lg transition bg-white text-blue-600 shadow-sm">1. Patient Form</button>
+                <button onclick="switchTab('page2')" id="btn-page2" class="px-4 py-2 rounded-lg transition text-slate-600 hover:text-slate-900">2. Doctor View</button>
+                <button onclick="switchTab('page3')" id="btn-page3" class="px-4 py-2 rounded-lg transition text-slate-600 hover:text-slate-900">3. Secure Vault & Key</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container Pages -->
+    <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
+
+        <!-- PAGE 1: Complete Form Data for Patient -->
+        <section id="page1" class="page-section space-y-6">
+            <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-sm">
+                <div class="mb-6 border-b border-slate-100 pb-4">
+                    <h2 class="text-lg font-bold text-slate-900">Patient Data Intake Form</h2>
+                    <p class="text-xs text-slate-500 mt-1">Submit new patient details. This data is automatically encrypted with AES-256 and chained into the secure ledger.</p>
+                </div>
+
+                <form onsubmit="submitPatientForm(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Patient Full Name / MRN</label>
+                            <input type="text" id="patientName" placeholder="e.g., Jane Smith (ID: #4092)" required
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Age</label>
+                                <input type="number" id="patientAge" placeholder="32" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Gender</label>
+                                <select id="patientGender" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white">
+                                    <option value="Female">Female</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Confidential Medical Observations & Treatment</label>
+                        <textarea id="medicalNotes" rows="4" placeholder="Enter diagnosis, prescription data, and clinical history..." required
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" id="formSubmitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition text-xs uppercase tracking-wider shadow-sm">
+                        Submit & Encrypt to Blockchain Ledger
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- PAGE 2: Doctor View Records -->
+        <section id="page2" class="page-section hidden space-y-6">
+            <div class="flex justify-between items-center bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
+                <div>
+                    <h2 class="text-base font-bold text-slate-900">Doctor's Medical Records Ledger</h2>
+                    <p class="text-xs text-slate-500">Overview of all immutable blockchain entries.</p>
+                </div>
+                <button onclick="loadRecords()" class="bg-blue-50 text-blue-600 border border-blue-100 hover:bg-blue-100 px-4 py-2 rounded-xl text-xs font-semibold transition">
+                    🔄 Refresh Chain
+                </button>
+            </div>
+
+            <div id="doctorRecordsContainer" class="space-y-4">
+                <!-- Injected Records -->
+            </div>
+        </section>
+
+        <!-- PAGE 3: Password-Protected Secure Vault -->
+        <section id="page3" class="page-section hidden space-y-6">
+            <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-sm">
+                <div class="mb-6 border-b border-slate-100 pb-4">
+                    <h2 class="text-lg font-bold text-slate-900">🔒 Secure Decryption Vault</h2>
+                    <p class="text-xs text-slate-500 mt-1">Medical record payloads are AES-256 encrypted in the database. Enter the master clinical password to unlock plain-text access.</p>
+                </div>
+
+                <div class="flex gap-3 mb-6">
+                    <input type="password" id="vaultPassword" placeholder="Enter Master Password (Hint: DoctorSecure123!)" 
+                        class="flex-grow bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white">
+                    <button onclick="unlockVault()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-3 rounded-xl transition text-xs shadow-sm">
+                        Unlock Vault
+                    </button>
+                </div>
+
+                <div id="vaultStatusMessage" class="text-xs font-semibold text-slate-500 mb-4">
+                    Status: Locked. Please authenticate with password to view sensitive notes.
+                </div>
+
+                <div id="vaultRecordsContainer" class="space-y-4">
+                    <!-- Unlocked records will show here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Script Logic -->
+    <script>
+        let currentPassword = "";
+
+        function switchTab(pageId) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+
+            ['btn-page1', 'btn-page2', 'btn-page3'].forEach(id => {
+                const btn = document.getElementById(id);
+                btn.className = "px-4 py-2 rounded-lg transition text-slate-600 hover:text-slate-900";
+            });
+
+            const activeBtn = document.getElementById('btn-' + pageId);
+            activeBtn.className = "px-4 py-2 rounded-lg transition bg-white text-blue-600 shadow-sm";
+
+            if (pageId === 'page2') loadRecords();
+            if (pageId === 'page3') loadVaultRecords();
+        }
+
+        async function submitPatientForm(e) {
+            e.preventDefault();
+            const patientName = document.getElementById('patientName').value;
+            const age = document.getElementById('patientAge').value;
+            const gender = document.getElementById('patientGender').value;
+            const medicalNotes = document.getElementById('medicalNotes').value;
+            const btn = document.getElementById('formSubmitBtn');
+
+            btn.disabled = true;
+            btn.innerText = "Encrypting & Mining Block...";
+
+            try {
+                const res = await fetch('http://localhost:3000/api/add-record', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patientName, age, gender, medicalNotes })
+                });
+
+                if (res.ok) {
+                    alert('Patient record encrypted and committed successfully!');
+                    document.getElementById('patientName').value = '';
+                    document.getElementById('patientAge').value = '';
+                    document.getElementById('medicalNotes').value = '';
+                    switchTab('page2');
+                } else {
+                    alert('Error saving record.');
+                }
+            } catch (err) {
+                alert('Connection failure.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Submit & Encrypt to Blockchain Ledger";
+            }
+        }
+
+        async function loadRecords() {
+            try {
+                const res = await fetch('http://localhost:3000/api/records', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: currentPassword })
+                });
+                const data = await res.json();
+                renderRecordsList(data.chain, 'doctorRecordsContainer');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function unlockVault() {
+            const pwd = document.getElementById('vaultPassword').value;
+            currentPassword = pwd;
+            await loadVaultRecords();
+        }
+
+        async function loadVaultRecords() {
+            const msg = document.getElementById('vaultStatusMessage');
+            try {
+                const res = await fetch('http://localhost:3000/api/records', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: currentPassword })
+                });
+                const data = await res.json();
+
+                if (data.isAuthorized) {
+                    msg.className = "text-xs font-semibold text-emerald-600 mb-4";
+                    msg.innerText = "Status: 🔓 Vault Unlocked. Plain-text decryption active.";
+                } else {
+                    msg.className = "text-xs font-semibold text-rose-600 mb-4";
+                    msg.innerText = "Status: 🔒 Incorrect password. Clinical notes remain encrypted. (Hint: DoctorSecure123!)";
+                }
+
+                renderRecordsList(data.chain, 'vaultRecordsContainer');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderRecordsList(chain, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            chain.forEach(rec => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-200 rounded-2xl p-5 shadow-sm relative overflow-hidden";
+                card.innerHTML = `
+                    <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-600"></div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="font-mono text-xs bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-md font-semibold">RECORD #${rec.id}</span>
+                        <span class="text-xs text-slate-400">${new Date(rec.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-900 mb-2">${escapeHtml(rec.patientName)}</h3>
+                    <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl mb-3">
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase block mb-1">Clinical Data / Notes View</span>
+                        <p class="text-xs text-slate-700 font-medium">${escapeHtml(rec.decryptedData)}</p>
+                    </div>
+                    <div class="text-[10px] text-slate-400 mono-font truncate">
+                        Hash: <span class="text-blue-600">${rec.hash}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // Default load Page 2 records on initialization
+        loadRecords();
+    </script>
+</body>
+</html>
