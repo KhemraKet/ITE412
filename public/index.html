@@ -108,7 +108,7 @@
                 </div>
 
                 <div class="flex gap-3 mb-6">
-                    <input type="password" id="vaultPassword" placeholder="Enter Master Password (Hint: 12345)" 
+                    <input type="password" id="vaultPassword" placeholder="Enter Master Password (Hint: DoctorSecure123!)" 
                         class="flex-grow bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white">
                     <button onclick="unlockVault()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-3 rounded-xl transition text-xs shadow-sm">
                         Unlock Vault
@@ -159,7 +159,7 @@
             btn.innerText = "Encrypting & Mining Block...";
 
             try {
-                const res = await window.fetch('/api/add-record', {
+                const res = await fetch('http://localhost:3000/api/add-record', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ patientName, age, gender, medicalNotes })
@@ -184,7 +184,7 @@
 
         async function loadRecords() {
             try {
-                const res = await window.fetch('/api/records', {
+                const res = await fetch('http://localhost:3000/api/records', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: currentPassword })
@@ -205,7 +205,7 @@
         async function loadVaultRecords() {
             const msg = document.getElementById('vaultStatusMessage');
             try {
-                const res = await window.fetch('/api/records', {
+                const res = await fetch('http://localhost:3000/api/records', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: currentPassword })
@@ -217,7 +217,7 @@
                     msg.innerText = "Status: 🔓 Vault Unlocked. Plain-text decryption active.";
                 } else {
                     msg.className = "text-xs font-semibold text-rose-600 mb-4";
-                    msg.innerText = "Status: 🔒 Incorrect password. Clinical notes remain encrypted. (Hint: 12345)";
+                    msg.innerText = "Status: 🔒 Incorrect password. Clinical notes remain encrypted. (Hint: DoctorSecure123!)";
                 }
 
                 renderRecordsList(data.chain, 'vaultRecordsContainer');
@@ -236,7 +236,7 @@
                 card.innerHTML = `
                     <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-600"></div>
                     <div class="flex justify-between items-center mb-3">
-                        <span class="mono-font text-xs bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-md font-semibold">RECORD #${rec.id}</span>
+                        <span class="font-mono text-xs bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-md font-semibold">RECORD #${rec.id}</span>
                         <span class="text-xs text-slate-400">${new Date(rec.timestamp).toLocaleTimeString()}</span>
                     </div>
                     <h3 class="font-bold text-sm text-slate-900 mb-2">${escapeHtml(rec.patientName)}</h3>
@@ -256,6 +256,7 @@
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
+        // Default load Page 2 records on initialization
         loadRecords();
     </script>
 </body>
