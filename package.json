@@ -1,16 +1,27 @@
 {
-  "name": "medichain-hospital-app",
+  "name": "hospital-blockchain",
   "version": "1.0.0",
-  "description": "Hospital Blockchain EHR & Cryptographic Vault",
+  "description": "",
   "main": "server.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.19.2"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KhemraKet/ITE412.git"
   },
-  "engines": {
-    "node": ">=18.0.0"
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/KhemraKet/ITE412/issues"
+  },
+  "homepage": "https://github.com/KhemraKet/ITE412#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "sqlite3": "^6.0.1"
   }
 }
